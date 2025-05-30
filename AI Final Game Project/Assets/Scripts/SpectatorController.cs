@@ -76,14 +76,15 @@ public class SpectatorController : MonoBehaviour
                 rotationTransform.rotation = Quaternion.Euler(rotX, rotY, 0.0f);
 
                 //Assign Velocity
-                velocity = rotationTransform.forward * Input.GetAxisRaw("Vertical") + rotationTransform.right * Input.GetAxisRaw("Horizontal") + Vector3.up * Input.GetAxisRaw("Lift");
-                velocity.Normalize(); //Normalize The Vector
+                Vector3 tmpVelocity = (rotationTransform.forward * Input.GetAxisRaw("Vertical") + rotationTransform.right * Input.GetAxisRaw("Horizontal") + Vector3.up * Input.GetAxisRaw("Lift")).normalized;
 
-                transform.position += velocity * movementSpeed * Time.deltaTime;
+                velocity = Vector3.Lerp(velocity, tmpVelocity * movementSpeed, Time.deltaTime * 5f);
             }
             else
             {
                 Cursor.lockState = CursorLockMode.None;
+
+                velocity = Vector3.Lerp(velocity, Vector3.zero, Time.deltaTime * 5f);
 
                 //Clicking Can Select A Object When The Camera Is Not In Rotation Mode
                 if (Input.GetMouseButtonDown(0))
@@ -104,6 +105,9 @@ public class SpectatorController : MonoBehaviour
                     }
                 }
             }//Unhide Cursor
+
+
+            transform.position += velocity * movementSpeed * Time.deltaTime;
         }
     }
 

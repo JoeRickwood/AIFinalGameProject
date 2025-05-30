@@ -10,7 +10,8 @@ public class TeamController : MonoBehaviour
     public Transform spawnPoint;
     public int teamPlayerCount;
     public float spawnSpacing = 1f;
-    public Color teamColor;
+    public Team team;
+    public int score;
 
     [Space(25)]
     public List<PlayerController> controllers;
@@ -37,7 +38,9 @@ public class TeamController : MonoBehaviour
 
             GameObject cur = Instantiate(playerPrefab, position, Quaternion.identity);
 
-            cur.GetComponent<PlayerController>().SetColor(teamColor);
+            cur.GetComponent<PlayerController>().team = team;
+            cur.GetComponent<PlayerController>().SetColor(GameManager.Instance.GetColorFromTeam(team));
+            cur.GetComponent<PlayerController>().parentController = this;
 
             controllers.Add(cur.GetComponent<PlayerController>());
         }

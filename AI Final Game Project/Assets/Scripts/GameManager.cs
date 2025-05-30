@@ -12,4 +12,20 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
     }
+
+    public Color GetColorFromTeam(Team team)
+    {
+        switch (team)
+        {
+            case Team.Blue:
+                return Color.blue;
+            
+            case Team.Green:
+                return Color.green;
+                
+            default:
+                return Color.white;
+          
+        }
+    }
 }

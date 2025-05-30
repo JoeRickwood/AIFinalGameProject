@@ -1,6 +1,12 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum Team
+{
+    Blue,
+    Green
+}
+
 public interface IControllerInput
 {
     public Vector2 GetInput(PlayerController obj);
@@ -54,10 +60,16 @@ public class PlayerController : MonoBehaviour
     public CharacterController controller;
     public NavMeshAgent navAgent;
     public new MeshRenderer renderer;
+    public Flag flag;
+
+
+    public bool hasFlag;
 
 
     [Header("Stats")]
     public float moveSpeed = 5f;
+    public Team team;
+    public TeamController parentController;
 
     public IControllerInput inputType;
     Vector3 velocity = new Vector3(0f, 0f, 0f);
@@ -70,13 +82,14 @@ public class PlayerController : MonoBehaviour
     {
         inputType = new AIInput();
 
-
         navAgent.updatePosition = false;
         navAgent.updateRotation = false;
     }
 
     private void Update()
     {
+        flag.gameObject.SetActive(hasFlag);
+
         inputType.UpdateRotation(this, ref rotX, ref rotY);
         Vector2 input = inputType.GetInput(this);
 
@@ -96,7 +109,6 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, rotY, 0f);
 
         navAgent.nextPosition = transform.position;
-
     }
 
     public void Jump()
@@ -108,5 +120,10 @@ public class PlayerController : MonoBehaviour
     {
         renderer.material = new Material(renderer.material);
         renderer.material.color = _col;
+    }
+
+    public void CaptureFlag()
+    {
+        hasFlag = true;
     }
 }

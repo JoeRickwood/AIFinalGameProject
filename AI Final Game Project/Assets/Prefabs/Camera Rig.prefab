@@ -142,4 +142,5 @@ MonoBehaviour:
   type: 0
   rotationTransform: {fileID: 8369017705794438646}
   mouseSensitivity: 1
-  movementSpeed: 10
+  movementSpeed: 5
+  controlledPlayer: {fileID: 0}
