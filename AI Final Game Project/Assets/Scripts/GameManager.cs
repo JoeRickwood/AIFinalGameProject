@@ -8,9 +8,13 @@ public class GameManager : MonoBehaviour
 
     public bool gameStarted;
 
+    public List<TeamController> controllers;
+
     private void Awake()
     {
         Instance = this;
+
+        controllers = new List<TeamController>();
     }
 
     public Color GetColorFromTeam(Team team)
@@ -27,5 +31,18 @@ public class GameManager : MonoBehaviour
                 return Color.white;
           
         }
+    }
+
+    public TeamController GetTeamControllerFromTeam(Team _team)
+    {
+        for (int i = 0; i < controllers.Count; i++)
+        {
+            if (controllers[i].team == _team)
+            {
+                return controllers[i];  
+            }
+        }
+
+        return null;
     }
 }

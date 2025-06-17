@@ -61,14 +61,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Flag.cs" />
-    <Compile Include="Assets\SelectedAgentUI.cs" />
-    <Compile Include="Assets\TeamScore.cs" />
+    <Compile Include="Assets\Scripts\CaptureZone.cs" />
+    <Compile Include="Assets\Scripts\PrisonZone.cs" />
+    <Compile Include="Assets\Scripts\TeamScore.cs" />
+    <Compile Include="Assets\Scripts\MainMenu.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\TeamZone.cs" />
     <Compile Include="Assets\Scripts\SpectatorController.cs" />
+    <Compile Include="Assets\Scripts\SelectedAgentUI.cs" />
     <Compile Include="Assets\Scripts\TeamController.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
-    <Compile Include="Assets\MainMenu.cs" />
-    <Compile Include="Assets\CaptureZone.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

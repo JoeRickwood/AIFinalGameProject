@@ -7,6 +7,16 @@ public enum Team
     Green
 }
 
+public enum AIState
+{
+    Wandering,
+    Idle,
+    Prison,
+    Capturing,
+    Chasing,
+    Freeing
+}
+
 public interface IControllerInput
 {
     public Vector2 GetInput(PlayerController obj);
@@ -45,11 +55,13 @@ public class AIInput : IControllerInput
 
     public void UpdateRotation(PlayerController obj, ref float rotX, ref float rotY)
     {
-        Vector3 normalizedVelocity = obj.GetComponent<NavMeshAgent>().velocity.normalized;
-        float rotation = Mathf.Atan2(normalizedVelocity.z, normalizedVelocity.x);
+        Vector3 direction = obj.velocity.normalized;
 
-        rotX = 0f;
-        rotY = Mathf.LerpAngle(obj.transform.eulerAngles.y, rotation, Time.deltaTime * 5f);
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
+            rotY = lookRotation.eulerAngles.y;
+        }
     }
 }
 
@@ -59,20 +71,25 @@ public class PlayerController : MonoBehaviour
     [Header("Components")]
     public CharacterController controller;
     public NavMeshAgent navAgent;
-    public new MeshRenderer renderer;
+    public new SkinnedMeshRenderer renderer;
+    public Animator animator;
     public Flag flag;
+    public AIState currentState;
 
-
+    [Space(25)]
     public bool hasFlag;
-
+    public bool inPrison;
+    [HideInInspector] public bool insidePrisonZone;
+    public PlayerController target;
+    [Space(25)]
 
     [Header("Stats")]
     public float moveSpeed = 5f;
     public Team team;
     public TeamController parentController;
-
+    [Space(25)]
     public IControllerInput inputType;
-    Vector3 velocity = new Vector3(0f, 0f, 0f);
+    [HideInInspector] public Vector3 velocity = new Vector3(0f, 0f, 0f);
     Vector3 gravityVelocity = new Vector3(0f, 0f, 0f);
     [HideInInspector] public float rotX;
     [HideInInspector] public float rotY;
@@ -84,6 +101,8 @@ public class PlayerController : MonoBehaviour
 
         navAgent.updatePosition = false;
         navAgent.updateRotation = false;
+
+        currentState = AIState.Idle;
     }
 
     private void Update()
@@ -95,10 +114,19 @@ public class PlayerController : MonoBehaviour
 
         velocity = (input.x * transform.right + input.y * transform.forward) * moveSpeed;
 
-        if(controller.isGrounded)
+        if(velocity.magnitude > 0.1f)
+        {
+            animator.SetBool("isMoving", true);
+        }else
+        {
+            animator.SetBool("isMoving", false);
+        }
+
+        if (controller.isGrounded)
         {
             gravityVelocity = new Vector3(0f, -1f, 0f);
-        }else
+        }
+        else
         {
             gravityVelocity += Time.deltaTime * Vector3.down * 9.81f;
         }
@@ -109,6 +137,11 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, rotY, 0f);
 
         navAgent.nextPosition = transform.position;
+
+        if(insidePrisonZone)
+        {
+
+        }
     }
 
     public void Jump()
